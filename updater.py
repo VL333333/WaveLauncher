@@ -10,7 +10,7 @@ import requests
 
 import config
 
-ASSET_NAME = "MyCraftLauncher_Setup.exe"
+ASSET_NAME = "WAVE_Launcher_Setup.exe"
 API_URL = f"https://api.github.com/repos/{config.GITHUB_REPO}/releases/latest"
 
 
@@ -58,7 +58,7 @@ def can_self_update() -> bool:
 
 
 def download_installer(info: dict, on_percent=None) -> str:
-    path = os.path.join(tempfile.gettempdir(), f"MyCraftLauncher_Setup_{info['version']}.exe")
+    path = os.path.join(tempfile.gettempdir(), f"WAVE_Launcher_Setup_{info['version']}.exe")
     sha = hashlib.sha256()
     with requests.get(info["url"], stream=True, timeout=30) as r:
         r.raise_for_status()

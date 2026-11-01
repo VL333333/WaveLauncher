@@ -1,18 +1,18 @@
-; Inno Setup — створює MyCraftLauncher_Setup.exe зі звичайним майстром встановлення
-#define MyAppName "NovaCraft Launcher"
+; Inno Setup — створює WAVE_Launcher_Setup.exe зі звичайним майстром встановлення
+#define MyAppName "WAVE LAUNCHER"
 #ifndef MyAppVersion
   #define MyAppVersion "3.0"
 #endif
-#define MyAppExe "MyCraftLauncher.exe"
+#define MyAppExe "WAVELauncher.exe"
 
 [Setup]
 AppId={{B7C1D2A4-5E3F-4A86-9C1B-0A1B2C3D4E5F}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
-DefaultDirName={autopf}\MyCraftLauncher
+DefaultDirName={autopf}\WAVE Launcher
 DefaultGroupName={#MyAppName}
 OutputDir=installer_output
-OutputBaseFilename=MyCraftLauncher_Setup
+OutputBaseFilename=WAVE_Launcher_Setup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -29,7 +29,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "Створити ярлик на робочому столі"; Flags: checkedonce
 
 [Files]
-Source: "dist\MyCraftLauncher\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\WAVELauncher\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [InstallDelete]
 Type: files; Name: "{autodesktop}\MyCraft Launcher.lnk"

@@ -1,9 +1,9 @@
 """Налаштування лаунчера. Єдине, що ТРЕБА змінити, - CLIENT_ID."""
 import os
 
-APP_NAME = "NovaCraft Launcher"
-APP_SHORT = "NOVACRAFT"
-LAUNCHER_VERSION = "3.0"
+APP_NAME = "WAVE LAUNCHER"
+APP_SHORT = "WAVE"
+LAUNCHER_VERSION = "4.0"
 
 # Репозиторій GitHub, з релізів якого лаунчер бере оновлення.
 GITHUB_REPO = "VL333333/MyCraftLauncher"
@@ -18,7 +18,7 @@ REDIRECT_URI = f"http://localhost:{REDIRECT_PORT}"
 LOGIN_TIMEOUT_SECONDS = 180
 
 _APPDATA = os.environ.get("APPDATA", os.path.expanduser("~"))
-DATA_DIR = os.path.join(_APPDATA, "MyCraftLauncher")
+DATA_DIR = os.path.join(_APPDATA, "MyCraftLauncher")  # Keeps existing settings and account data
 SETTINGS_FILE = os.path.join(DATA_DIR, "settings.json")
 ACCOUNT_FILE = os.path.join(DATA_DIR, "account.json")
 LOG_FILE = os.path.join(DATA_DIR, "game.log")

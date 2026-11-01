@@ -1,14 +1,14 @@
-# NovaCraft Launcher 3.0 — Restyle
+# WAVE LAUNCHER 3.0 — Restyle
 
 Оновлений лаунчер Minecraft Java Edition для Windows на CustomTkinter. Збережено модулі Microsoft OAuth, встановлення версій і запуск гри з початкового проєкту; додано профілі, налаштування RAM та менеджер модів.
 
 ## Можливості
 - Microsoft OAuth із PKCE через наявний `auth.py` (потрібен власний Azure Client ID і дозвіл Minecraft API).
 - Офлайн-режим для одиночної гри та серверів `online-mode=false`.
-- Профілі: назва, версія, папка гри та RAM. Профілі зберігаються в `%APPDATA%\\MyCraftLauncher\\settings.json`.
+- Профілі: назва, версія, папка гри та RAM. Профілі зберігаються в `%APPDATA%\\WAVELauncher\\settings.json`.
 - Вибір виділення пам'яті 1–16 GB на головній сторінці (захист у коді дозволяє 1–32 GB).
 - Менеджер модів: показує `.jar` і перемикає стан перейменуванням у `.jar.disabled`. Це просте керування файлами, не каталог для завантаження модів.
-- Оновлений темний інтерфейс із фіолетовими акцентами, новою навігацією та переробленою головною сторінкою; фонова інсталяція та прогрес.
+- Оновлений темний інтерфейс із бірюзовими акцентами, новою навігацією та переробленою головною сторінкою; фонова інсталяція та прогрес.
 
 ## Встановлення
 Потрібен Python 3.11+.
@@ -33,7 +33,7 @@ python main.py
 
 ## Збірка EXE
 ```powershell
-pyinstaller --noconsole --onefile --name MyCraftLauncher --collect-all minecraft_launcher_lib --collect-all customtkinter main.py
+pyinstaller --noconsole --onefile --name WAVELauncher --collect-all minecraft_launcher_lib --collect-all customtkinter main.py
 ```
 Спершу налаштуй `CLIENT_ID` у `config.py`. Для розповсюдження не вбудовуй приватні секрети; OAuth public client не повинен містити client secret.
 

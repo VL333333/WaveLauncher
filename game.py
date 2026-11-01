@@ -79,7 +79,7 @@ def launch(version: str, game_dir: str, account: dict, ram_gb: int = 4) -> subpr
         "username": account["name"],
         "uuid": account["id"],
         "token": account["access_token"],
-        "launcherName": "MyCraftLauncher",
+        "launcherName": "WAVELauncher",
         "launcherVersion": config.LAUNCHER_VERSION,
         "gameDirectory": game_dir,
         "jvmArguments": [f"-Xms1G", f"-Xmx{max(1, min(32, int(ram_gb)))}G"],

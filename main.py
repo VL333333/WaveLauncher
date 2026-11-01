@@ -16,19 +16,19 @@ import storage
 import updater
 from errors import friendly_error
 
-BG = "#080b16"
-SIDEBAR = "#0d1020"
-PANEL = "#11172a"
-PANEL_ALT = "#1a2340"
-BORDER = "#283252"
-FG = "#f3f5ff"
-MUTED = "#929dbb"
-ACCENT = "#9b7bff"
-ACCENT_HOVER = "#8060ef"
-ACCENT_SOFT = "#211b43"
-GREEN = ACCENT
-GREEN_HOVER = ACCENT_HOVER
-RED = "#ff6b8a"
+BG = "#0b0f14"
+SIDEBAR = "#10161d"
+PANEL = "#151d26"
+PANEL_ALT = "#202b36"
+BORDER = "#2b3946"
+FG = "#f3f7fb"
+MUTED = "#94a4b5"
+ACCENT = "#5eead4"
+ACCENT_HOVER = "#99fff0"
+ACCENT_SOFT = "#183a3d"
+GREEN = "#5eead4"
+GREEN_HOVER = "#99fff0"
+RED = "#fb7185"
 
 
 def resource_path(rel):
@@ -98,14 +98,14 @@ class App:
         if self._logo_img:
             ctk.CTkLabel(brand, text="", image=self._logo_img).pack(side="left")
         else:
-            ctk.CTkLabel(brand, text="N", width=46, height=46, corner_radius=14,
-                         fg_color=ACCENT, text_color="#090b17", font=F(24, "bold")).pack(side="left")
+            ctk.CTkLabel(brand, text="W", width=46, height=46, corner_radius=14,
+                         fg_color=ACCENT, text_color="#071416", font=F(24, "bold")).pack(side="left")
         names = ctk.CTkFrame(brand, fg_color="transparent")
         names.pack(side="left", padx=(12, 0))
         ctk.CTkLabel(names, text="NOVA", font=F(22, "bold"), text_color=FG).pack(anchor="w")
         ctk.CTkLabel(names, text="CRAFT  /  JAVA", font=F(10, "bold"), text_color=ACCENT).pack(anchor="w", pady=(1, 0))
 
-        ctk.CTkLabel(self.sidebar, text="WORKSPACE", text_color="#596486",
+        ctk.CTkLabel(self.sidebar, text="WORKSPACE", text_color="#718096",
                      font=F(10, "bold")).pack(anchor="w", padx=24, pady=(0, 10))
         self.nav = {}
         for icon, label, page in [
@@ -117,22 +117,22 @@ class App:
             btn = ctk.CTkButton(
                 self.sidebar, text=f"  {icon}     {label}", anchor="w", height=48,
                 corner_radius=13, font=F(14, "bold"), fg_color="transparent",
-                hover_color="#1b2140", text_color=MUTED,
+                hover_color="#25272c", text_color=MUTED,
                 border_spacing=12, command=lambda p=page: self._show_page(p))
             btn.pack(fill="x", padx=13, pady=4)
             self.nav[page] = btn
 
         ctk.CTkFrame(self.sidebar, fg_color="transparent").pack(expand=True, fill="both")
-        chip = ctk.CTkFrame(self.sidebar, fg_color="#141a30", corner_radius=16,
+        chip = ctk.CTkFrame(self.sidebar, fg_color="#1d1d1d", corner_radius=16,
                             border_width=1, border_color=BORDER)
         chip.pack(fill="x", padx=14, pady=(0, 10))
-        ctk.CTkLabel(chip, text="ACCOUNT STATUS", text_color="#657198",
+        ctk.CTkLabel(chip, text="ACCOUNT", text_color="#94a4b5",
                      font=F(9, "bold")).pack(anchor="w", padx=14, pady=(12, 3))
         self.side_account = ctk.CTkLabel(chip, text="Офлайн", text_color=FG,
                     font=F(12, "bold"), wraplength=190, justify="left", anchor="w")
         self.side_account.pack(fill="x", padx=14, pady=(0, 14))
         ctk.CTkLabel(self.sidebar, text=f"{config.APP_NAME}  ·  v{config.LAUNCHER_VERSION}",
-                     text_color="#59617e", font=F(10)).pack(padx=20, pady=(0, 18), anchor="w")
+                     text_color="#718096", font=F(10)).pack(padx=20, pady=(0, 18), anchor="w")
 
         self.content = ctk.CTkFrame(self.root, fg_color=BG, corner_radius=0)
         self.content.grid(row=0, column=1, sticky="nsew", padx=34, pady=28)
@@ -168,7 +168,7 @@ class App:
     def _btn(self, parent, text, command, secondary=True, **kw):
         base = dict(height=38, corner_radius=10, font=F(13, "bold"), command=command)
         if secondary: base.update(fg_color=PANEL_ALT, hover_color=BORDER, text_color=FG)
-        else: base.update(fg_color=ACCENT, hover_color=ACCENT_HOVER, text_color="#04140d")
+        else: base.update(fg_color=ACCENT, hover_color=ACCENT_HOVER, text_color="#071a1a")
         base.update(kw)
         return ctk.CTkButton(parent, text=text, **base)
 
@@ -183,29 +183,44 @@ class App:
 
     def _home_page(self):
         who = self.name_var.get().strip() or "гравцю"
-        self._header(f"Привіт, {who}!" if self.mode_var.get() == "offline" else "Твій наступний світ.", "NOVA CRAFT  /  MINECRAFT JAVA EDITION")
+        self._header(f"Привіт, {who}!" if self.mode_var.get() == "offline" else "Твій наступний світ.", "WAVE LAUNCHER  /  MINECRAFT JAVA EDITION")
 
         # Main launch panel
-        hero = ctk.CTkFrame(self.content, fg_color="#151632", corner_radius=26,
-                            border_width=1, border_color="#393266")
+        hero = ctk.CTkFrame(self.content, fg_color="#121a22", corner_radius=26,
+                            border_width=1, border_color="#383838")
         hero.grid(row=2, column=0, sticky="ew", pady=(0, 18))
         hero.grid_columnconfigure(0, weight=1)
-        ctk.CTkLabel(hero, text="✦  YOUR ADVENTURE STARTS HERE",
-                     text_color="#b7a5ff", font=F(11, "bold")).grid(
+        hero.grid_columnconfigure(1, minsize=178)
+        # Quiet premium signature panel: monochrome mark, version and animated rule.
+        signature = ctk.CTkFrame(hero, fg_color="#18242d", corner_radius=22,
+                                 border_width=1, border_color="#2c3b46", width=148, height=190)
+        signature.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=(0, 22), pady=22)
+        signature.grid_propagate(False)
+        ctk.CTkLabel(signature, text="W", text_color="#f3f7fb",
+                     font=F(58, "bold")).pack(expand=True, pady=(14, 0))
+        ctk.CTkLabel(signature, text="WAVE / 04", text_color="#a4a6ad",
+                     font=F(10, "bold")).pack(pady=(0, 16))
+        self._premium_rule = ctk.CTkFrame(signature, height=3, corner_radius=2,
+                                          fg_color="#f1f1f2", width=42)
+        self._premium_rule.pack(pady=(0, 15))
+        self._premium_rule_step = 0
+        self.root.after(650, self._animate_premium_rule)
+        ctk.CTkLabel(hero, text="WAVE LAUNCHER  /  READY TO PLAY",
+                     text_color="#a8f3e7", font=F(11, "bold")).grid(
                          row=0, column=0, sticky="w", padx=30, pady=(27, 8))
         ctk.CTkLabel(hero, text="Менше налаштувань.\nБільше пригод.",
                      text_color=FG, font=F(31, "bold"), justify="left").grid(
                          row=1, column=0, sticky="w", padx=30)
         ctk.CTkLabel(hero, text="Обери версію, налаштуй пам’ять і повертайся у свій світ.",
-                     text_color="#a7accd", font=F(13), wraplength=590).grid(
+                     text_color="#a8b7c5", font=F(13), wraplength=590).grid(
                          row=2, column=0, sticky="w", padx=30, pady=(9, 0))
         self.play_btn = ctk.CTkButton(
             hero, text="▶   ЗАПУСТИТИ MINECRAFT", height=54, width=280,
             corner_radius=15, font=F(15, "bold"), fg_color=ACCENT,
-            hover_color=ACCENT_HOVER, text_color="#0b0c1b", command=self._on_play)
+            hover_color="#7ff5e5", text_color="#10161d", command=self._on_play)
         self.play_btn.grid(row=3, column=0, sticky="w", padx=30, pady=(22, 28))
-        ctk.CTkLabel(hero, text="JAVA  EDITION   •   LAUNCHER 3.0",
-                     text_color="#6d6b9c", font=F(10, "bold")).grid(
+        ctk.CTkLabel(hero, text="MINECRAFT JAVA EDITION     /     WAVE 4.0",
+                     text_color="#718096", font=F(10, "bold")).grid(
                          row=4, column=0, sticky="w", padx=30, pady=(0, 22))
 
         controls = ctk.CTkFrame(self.content, fg_color="transparent")
@@ -213,7 +228,7 @@ class App:
         controls.grid_columnconfigure((0, 1), weight=1, uniform="c")
         version_card = self._card(controls)
         version_card.grid(row=0, column=0, sticky="nsew", padx=(0, 9))
-        ctk.CTkLabel(version_card, text="01  /  GAME VERSION", text_color=ACCENT,
+        ctk.CTkLabel(version_card, text="GAME VERSION", text_color=ACCENT,
                      font=F(10, "bold")).pack(anchor="w", padx=20, pady=(18, 8))
         self.version_box = self._combo(version_card, variable=self.version_var,
                      values=[self.version_var.get()] if self.version_var.get() else [], state="readonly")
@@ -221,7 +236,7 @@ class App:
 
         ram_card = self._card(controls)
         ram_card.grid(row=0, column=1, sticky="nsew", padx=(9, 0))
-        ctk.CTkLabel(ram_card, text="02  /  MEMORY ALLOCATION", text_color=ACCENT,
+        ctk.CTkLabel(ram_card, text="MEMORY ALLOCATION", text_color=ACCENT,
                      font=F(10, "bold")).pack(anchor="w", padx=20, pady=(18, 8))
         ramrow = ctk.CTkFrame(ram_card, fg_color="transparent")
         ramrow.pack(fill="x", padx=20, pady=(3, 20))
@@ -234,7 +249,7 @@ class App:
                      width=58, font=F(15, "bold"), text_color=ACCENT)
         self.ram_label.pack(side="right")
 
-        status = ctk.CTkFrame(self.content, fg_color="#101629", corner_radius=17,
+        status = ctk.CTkFrame(self.content, fg_color="#121a22", corner_radius=17,
                               border_width=1, border_color=BORDER)
         status.grid(row=4, column=0, sticky="ew", pady=(18, 0))
         top = ctk.CTkFrame(status, fg_color="transparent")
@@ -258,6 +273,18 @@ class App:
         self.logout_btn = self._btn(account, "Вийти з акаунта", self._logout, width=130, height=30)
         self.logout_btn.pack(side="right")
         self._refresh_account_label()
+
+    def _animate_premium_rule(self):
+        """Subtle, low-distraction motion for the signature card."""
+        try:
+            if not self.root.winfo_exists() or not hasattr(self, "_premium_rule"):
+                return
+            widths = [30, 42, 56, 42]
+            self._premium_rule_step = (self._premium_rule_step + 1) % len(widths)
+            self._premium_rule.configure(width=widths[self._premium_rule_step])
+            self.root.after(650, self._animate_premium_rule)
+        except Exception:
+            pass
 
     def _profiles_page(self):
         self._header("Профілі", "Окремі налаштування для різних збірок Minecraft.")
@@ -290,14 +317,14 @@ class App:
         self._btn(row, "Обрати…", self._choose_dir, width=100).pack(side="right")
         self._caption(card, "Спосіб входу").pack(anchor="w", padx=20, pady=(18, 6))
         seg = ctk.CTkSegmentedButton(card, values=["Microsoft", "Офлайн"], command=self._set_auth_mode, height=36,
-                                     selected_color="#1f9d72", selected_hover_color="#1a8962", unselected_color=PANEL_ALT,
+                                     selected_color="#45474d", selected_hover_color="#5a5d64", unselected_color=PANEL_ALT,
                                      unselected_hover_color=BORDER, text_color=FG, fg_color=PANEL_ALT, font=F(13, "bold"))
         seg.pack(anchor="w", padx=20)
         seg.set("Офлайн" if self.mode_var.get() == "offline" else "Microsoft")
         self._caption(card, "Нік для офлайн-режиму").pack(anchor="w", padx=20, pady=(18, 6))
         self._entry(card, textvariable=self.name_var, width=280).pack(anchor="w", padx=20)
         ctk.CTkCheckBox(card, text="Показувати снапшоти", variable=self.snap_var, command=self._load_versions, font=F(13),
-                        fg_color=ACCENT, hover_color=ACCENT_HOVER, checkmark_color="#04140d", border_color=BORDER).pack(anchor="w", padx=20, pady=18)
+                        fg_color=ACCENT, hover_color=ACCENT_HOVER, checkmark_color="#071a1a", border_color=BORDER).pack(anchor="w", padx=20, pady=18)
         self._btn(card, "Зберегти налаштування", self._save_settings, secondary=False).pack(anchor="w", padx=20, pady=(0, 20))
 
     def _ram_changed(self, value):

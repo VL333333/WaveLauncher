@@ -1,4 +1,4 @@
-"""Збереження налаштувань та даних акаунта у %APPDATA%\\MyCraftLauncher."""
+"""Збереження налаштувань та даних акаунта у %APPDATA%\\WAVELauncher."""
 import json
 import os
 
