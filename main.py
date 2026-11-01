@@ -16,19 +16,19 @@ import storage
 import updater
 from errors import friendly_error
 
-BG = "#0a0e13"
-SIDEBAR = "#0e131a"
-PANEL = "#131a23"
-PANEL_ALT = "#1a2330"
-BORDER = "#222d3b"
-FG = "#eaf0f6"
-MUTED = "#8696a8"
-ACCENT = "#34d399"
-ACCENT_HOVER = "#22b784"
-ACCENT_SOFT = "#10302a"
+BG = "#080b16"
+SIDEBAR = "#0d1020"
+PANEL = "#11172a"
+PANEL_ALT = "#1a2340"
+BORDER = "#283252"
+FG = "#f3f5ff"
+MUTED = "#929dbb"
+ACCENT = "#9b7bff"
+ACCENT_HOVER = "#8060ef"
+ACCENT_SOFT = "#211b43"
 GREEN = ACCENT
 GREEN_HOVER = ACCENT_HOVER
-RED = "#ef6461"
+RED = "#ff6b8a"
 
 
 def resource_path(rel):
@@ -40,7 +40,7 @@ def F(size=13, weight="normal"):
     return ctk.CTkFont(family="Segoe UI", size=size, weight=weight)
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("green")
+ctk.set_default_color_theme("blue")
 
 
 class App:
@@ -63,8 +63,8 @@ class App:
 
         root.title(config.APP_NAME)
         root.after(250, self._set_icon)
-        root.geometry("1000x700")
-        root.minsize(900, 640)
+        root.geometry("1120x760")
+        root.minsize(960, 680)
         root.configure(fg_color=BG)
         self._build_ui()
         self._refresh_account_label()
@@ -79,43 +79,63 @@ class App:
         except Exception: pass
 
     def _build_ui(self):
+        # Clean, editorial layout with a compact navigation rail.
         self.root.grid_columnconfigure(1, weight=1)
         self.root.grid_rowconfigure(0, weight=1)
-        self.sidebar = ctk.CTkFrame(self.root, width=230, corner_radius=0, fg_color=SIDEBAR)
+        self.sidebar = ctk.CTkFrame(self.root, width=248, corner_radius=0, fg_color=SIDEBAR,
+                                    border_width=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         self.sidebar.grid_propagate(False)
 
         brand = ctk.CTkFrame(self.sidebar, fg_color="transparent")
-        brand.pack(fill="x", padx=20, pady=(26, 28))
+        brand.pack(fill="x", padx=22, pady=(28, 34))
         self._logo_img = None
         try:
             from PIL import Image
-            self._logo_img = ctk.CTkImage(Image.open(resource_path("assets/icon.png")), size=(40, 40))
-        except Exception: pass
-        if self._logo_img: ctk.CTkLabel(brand, text="", image=self._logo_img).pack(side="left")
-        names = ctk.CTkFrame(brand, fg_color="transparent"); names.pack(side="left", padx=(12, 0))
-        ctk.CTkLabel(names, text=config.APP_SHORT, font=F(20, "bold"), text_color=FG).pack(anchor="w")
-        ctk.CTkLabel(names, text="Minecraft Java Launcher", font=F(10), text_color=MUTED).pack(anchor="w")
+            self._logo_img = ctk.CTkImage(Image.open(resource_path("assets/icon.png")), size=(46, 46))
+        except Exception:
+            pass
+        if self._logo_img:
+            ctk.CTkLabel(brand, text="", image=self._logo_img).pack(side="left")
+        else:
+            ctk.CTkLabel(brand, text="N", width=46, height=46, corner_radius=14,
+                         fg_color=ACCENT, text_color="#090b17", font=F(24, "bold")).pack(side="left")
+        names = ctk.CTkFrame(brand, fg_color="transparent")
+        names.pack(side="left", padx=(12, 0))
+        ctk.CTkLabel(names, text="NOVA", font=F(22, "bold"), text_color=FG).pack(anchor="w")
+        ctk.CTkLabel(names, text="CRAFT  /  JAVA", font=F(10, "bold"), text_color=ACCENT).pack(anchor="w", pady=(1, 0))
 
+        ctk.CTkLabel(self.sidebar, text="WORKSPACE", text_color="#596486",
+                     font=F(10, "bold")).pack(anchor="w", padx=24, pady=(0, 10))
         self.nav = {}
-        for text, page in [("⌂", "home"), ("▤", "profiles"), ("◇", "mods"), ("⚙", "settings")]:
-            label = {"home": "Головна", "profiles": "Профілі", "mods": "Моди", "settings": "Налаштування"}[page]
-            btn = ctk.CTkButton(self.sidebar, text=f"  {text}    {label}", anchor="w", height=44, corner_radius=12,
-                                font=F(14, "bold"), fg_color="transparent", hover_color=PANEL_ALT, text_color=MUTED,
-                                command=lambda p=page: self._show_page(p))
-            btn.pack(fill="x", padx=14, pady=3)
+        for icon, label, page in [
+            ("⌂", "Головна", "home"),
+            ("▦", "Профілі", "profiles"),
+            ("◇", "Моди", "mods"),
+            ("⚙", "Налаштування", "settings"),
+        ]:
+            btn = ctk.CTkButton(
+                self.sidebar, text=f"  {icon}     {label}", anchor="w", height=48,
+                corner_radius=13, font=F(14, "bold"), fg_color="transparent",
+                hover_color="#1b2140", text_color=MUTED,
+                border_spacing=12, command=lambda p=page: self._show_page(p))
+            btn.pack(fill="x", padx=13, pady=4)
             self.nav[page] = btn
 
         ctk.CTkFrame(self.sidebar, fg_color="transparent").pack(expand=True, fill="both")
-        chip = ctk.CTkFrame(self.sidebar, fg_color=PANEL, corner_radius=14, border_width=1, border_color=BORDER)
+        chip = ctk.CTkFrame(self.sidebar, fg_color="#141a30", corner_radius=16,
+                            border_width=1, border_color=BORDER)
         chip.pack(fill="x", padx=14, pady=(0, 10))
-        dot = ctk.CTkFrame(chip, width=10, height=10, corner_radius=5, fg_color=ACCENT); dot.pack(side="left", padx=(14, 8), pady=16)
-        self.side_account = ctk.CTkLabel(chip, text="Офлайн", text_color=FG, font=F(12), wraplength=150, justify="left", anchor="w")
-        self.side_account.pack(side="left", fill="x", expand=True, pady=10, padx=(0, 10))
-        ctk.CTkLabel(self.sidebar, text=f"{config.APP_NAME}  ·  v{config.LAUNCHER_VERSION}", text_color="#4d5b6b", font=F(10)).pack(padx=20, pady=(0, 18), anchor="w")
+        ctk.CTkLabel(chip, text="ACCOUNT STATUS", text_color="#657198",
+                     font=F(9, "bold")).pack(anchor="w", padx=14, pady=(12, 3))
+        self.side_account = ctk.CTkLabel(chip, text="Офлайн", text_color=FG,
+                    font=F(12, "bold"), wraplength=190, justify="left", anchor="w")
+        self.side_account.pack(fill="x", padx=14, pady=(0, 14))
+        ctk.CTkLabel(self.sidebar, text=f"{config.APP_NAME}  ·  v{config.LAUNCHER_VERSION}",
+                     text_color="#59617e", font=F(10)).pack(padx=20, pady=(0, 18), anchor="w")
 
         self.content = ctk.CTkFrame(self.root, fg_color=BG, corner_radius=0)
-        self.content.grid(row=0, column=1, sticky="nsew", padx=32, pady=28)
+        self.content.grid(row=0, column=1, sticky="nsew", padx=34, pady=28)
         self.content.grid_columnconfigure(0, weight=1)
         self._show_page("home")
 
@@ -129,14 +149,14 @@ class App:
         self._clear_content()
         for key, btn in getattr(self, "nav", {}).items():
             on = key == page
-            btn.configure(fg_color=ACCENT_SOFT if on else "transparent", text_color=ACCENT if on else MUTED)
+            btn.configure(fg_color=ACCENT_SOFT if on else "transparent", text_color=FG if on else MUTED)
         if page == "home": self._home_page()
         elif page == "profiles": self._profiles_page()
         elif page == "mods": self._mods_page()
         else: self._settings_page()
 
     def _header(self, title, subtitle):
-        ctk.CTkLabel(self.content, text=title, font=F(30, "bold"), text_color=FG).grid(row=0, column=0, sticky="w")
+        ctk.CTkLabel(self.content, text=title, font=F(32, "bold"), text_color=FG).grid(row=0, column=0, sticky="w")
         ctk.CTkLabel(self.content, text=subtitle, font=F(13), text_color=MUTED).grid(row=1, column=0, sticky="w", pady=(2, 20))
 
     def _card(self, parent=None, **kw):
@@ -163,50 +183,79 @@ class App:
 
     def _home_page(self):
         who = self.name_var.get().strip() or "гравцю"
-        self._header(f"Привіт, {who}!" if self.mode_var.get() == "offline" else "Радий тебе бачити!", "Обери версію та вирушай у світ.")
-        hero = ctk.CTkFrame(self.content, fg_color=ACCENT_SOFT, corner_radius=22, border_width=1, border_color="#1d5a48")
-        hero.grid(row=2, column=0, sticky="ew", pady=(0, 16))
+        self._header(f"Привіт, {who}!" if self.mode_var.get() == "offline" else "Твій наступний світ.", "NOVA CRAFT  /  MINECRAFT JAVA EDITION")
+
+        # Main launch panel
+        hero = ctk.CTkFrame(self.content, fg_color="#151632", corner_radius=26,
+                            border_width=1, border_color="#393266")
+        hero.grid(row=2, column=0, sticky="ew", pady=(0, 18))
         hero.grid_columnconfigure(0, weight=1)
-        ctk.CTkLabel(hero, text=f"●  {config.APP_SHORT} SURVIVAL", text_color=ACCENT, font=F(11, "bold")).grid(row=0, column=0, sticky="w", padx=28, pady=(26, 4))
-        ctk.CTkLabel(hero, text="Готовий до пригод?", font=F(28, "bold"), text_color=FG).grid(row=1, column=0, sticky="w", padx=28)
-        ctk.CTkLabel(hero, text="Один клік — і гра запущена. Все інше лаунчер зробить сам.", text_color="#9bc5b5", font=F(13)).grid(row=2, column=0, sticky="w", padx=28, pady=(4, 0))
-        self.play_btn = ctk.CTkButton(hero, text="▶   ГРАТИ", height=58, width=240, corner_radius=16,
-                                      font=F(20, "bold"), fg_color=ACCENT, hover_color=ACCENT_HOVER,
-                                      text_color="#04140d", command=self._on_play)
-        self.play_btn.grid(row=3, column=0, sticky="w", padx=28, pady=(20, 28))
+        ctk.CTkLabel(hero, text="✦  YOUR ADVENTURE STARTS HERE",
+                     text_color="#b7a5ff", font=F(11, "bold")).grid(
+                         row=0, column=0, sticky="w", padx=30, pady=(27, 8))
+        ctk.CTkLabel(hero, text="Менше налаштувань.\nБільше пригод.",
+                     text_color=FG, font=F(31, "bold"), justify="left").grid(
+                         row=1, column=0, sticky="w", padx=30)
+        ctk.CTkLabel(hero, text="Обери версію, налаштуй пам’ять і повертайся у свій світ.",
+                     text_color="#a7accd", font=F(13), wraplength=590).grid(
+                         row=2, column=0, sticky="w", padx=30, pady=(9, 0))
+        self.play_btn = ctk.CTkButton(
+            hero, text="▶   ЗАПУСТИТИ MINECRAFT", height=54, width=280,
+            corner_radius=15, font=F(15, "bold"), fg_color=ACCENT,
+            hover_color=ACCENT_HOVER, text_color="#0b0c1b", command=self._on_play)
+        self.play_btn.grid(row=3, column=0, sticky="w", padx=30, pady=(22, 28))
+        ctk.CTkLabel(hero, text="JAVA  EDITION   •   LAUNCHER 3.0",
+                     text_color="#6d6b9c", font=F(10, "bold")).grid(
+                         row=4, column=0, sticky="w", padx=30, pady=(0, 22))
 
         controls = ctk.CTkFrame(self.content, fg_color="transparent")
         controls.grid(row=3, column=0, sticky="ew")
         controls.grid_columnconfigure((0, 1), weight=1, uniform="c")
         version_card = self._card(controls)
-        version_card.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
-        self._caption(version_card, "Версія гри").pack(anchor="w", padx=18, pady=(16, 6))
-        self.version_box = self._combo(version_card, variable=self.version_var, values=[self.version_var.get()] if self.version_var.get() else [], state="readonly")
-        self.version_box.pack(fill="x", padx=18, pady=(0, 18))
+        version_card.grid(row=0, column=0, sticky="nsew", padx=(0, 9))
+        ctk.CTkLabel(version_card, text="01  /  GAME VERSION", text_color=ACCENT,
+                     font=F(10, "bold")).pack(anchor="w", padx=20, pady=(18, 8))
+        self.version_box = self._combo(version_card, variable=self.version_var,
+                     values=[self.version_var.get()] if self.version_var.get() else [], state="readonly")
+        self.version_box.pack(fill="x", padx=20, pady=(0, 20))
+
         ram_card = self._card(controls)
-        ram_card.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
-        self._caption(ram_card, "Оперативна пам’ять").pack(anchor="w", padx=18, pady=(16, 6))
-        ramrow = ctk.CTkFrame(ram_card, fg_color="transparent"); ramrow.pack(fill="x", padx=18, pady=(4, 20))
-        self.ram_slider = ctk.CTkSlider(ramrow, from_=1, to=16, number_of_steps=15, variable=self.ram_var, command=self._ram_changed,
-                                        progress_color=ACCENT, button_color=ACCENT, button_hover_color=ACCENT_HOVER, fg_color=PANEL_ALT)
+        ram_card.grid(row=0, column=1, sticky="nsew", padx=(9, 0))
+        ctk.CTkLabel(ram_card, text="02  /  MEMORY ALLOCATION", text_color=ACCENT,
+                     font=F(10, "bold")).pack(anchor="w", padx=20, pady=(18, 8))
+        ramrow = ctk.CTkFrame(ram_card, fg_color="transparent")
+        ramrow.pack(fill="x", padx=20, pady=(3, 20))
+        self.ram_slider = ctk.CTkSlider(ramrow, from_=1, to=16, number_of_steps=15,
+                     variable=self.ram_var, command=self._ram_changed,
+                     progress_color=ACCENT, button_color=ACCENT,
+                     button_hover_color=ACCENT_HOVER, fg_color=PANEL_ALT)
         self.ram_slider.pack(side="left", fill="x", expand=True, padx=(0, 14))
-        self.ram_label = ctk.CTkLabel(ramrow, text=f"{self.ram_var.get()} GB", width=58, font=F(15, "bold"), text_color=ACCENT)
+        self.ram_label = ctk.CTkLabel(ramrow, text=f"{self.ram_var.get()} GB",
+                     width=58, font=F(15, "bold"), text_color=ACCENT)
         self.ram_label.pack(side="right")
 
-        status = self._card()
-        status.grid(row=4, column=0, sticky="ew", pady=(16, 0))
-        self.status_label = ctk.CTkLabel(status, text="Готовий", font=F(14, "bold"), text_color=FG)
-        self.status_label.pack(anchor="w", padx=18, pady=(14, 2))
-        self.detail_label = ctk.CTkLabel(status, text="", text_color=MUTED, font=F(12), wraplength=650, justify="left")
-        self.detail_label.pack(anchor="w", padx=18, pady=(0, 8))
-        self.progress = ctk.CTkProgressBar(status, progress_color=ACCENT, fg_color=PANEL_ALT, height=8, corner_radius=4)
-        self.progress.pack(fill="x", padx=18, pady=(0, 16)); self.progress.set(0)
+        status = ctk.CTkFrame(self.content, fg_color="#101629", corner_radius=17,
+                              border_width=1, border_color=BORDER)
+        status.grid(row=4, column=0, sticky="ew", pady=(18, 0))
+        top = ctk.CTkFrame(status, fg_color="transparent")
+        top.pack(fill="x", padx=20, pady=(15, 2))
+        ctk.CTkLabel(top, text="●", text_color=ACCENT, font=F(12, "bold")).pack(side="left", padx=(0, 9))
+        self.status_label = ctk.CTkLabel(top, text="Готовий до запуску",
+                     font=F(13, "bold"), text_color=FG)
+        self.status_label.pack(side="left")
+        self.detail_label = ctk.CTkLabel(status, text="Лаунчер готовий. Налаштуй параметри та натисни запуск.",
+                     text_color=MUTED, font=F(12), wraplength=700, justify="left")
+        self.detail_label.pack(anchor="w", padx=20, pady=(2, 10))
+        self.progress = ctk.CTkProgressBar(status, progress_color=ACCENT,
+                     fg_color=PANEL_ALT, height=7, corner_radius=4)
+        self.progress.pack(fill="x", padx=20, pady=(0, 17))
+        self.progress.set(0)
 
         account = ctk.CTkFrame(self.content, fg_color="transparent")
         account.grid(row=6, column=0, sticky="ew", pady=(14, 0))
         self.account_label = ctk.CTkLabel(account, text="", text_color=MUTED, font=F(12))
         self.account_label.pack(side="left")
-        self.logout_btn = self._btn(account, "Вийти", self._logout, width=84, height=30)
+        self.logout_btn = self._btn(account, "Вийти з акаунта", self._logout, width=130, height=30)
         self.logout_btn.pack(side="right")
         self._refresh_account_label()
 
