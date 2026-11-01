@@ -22,7 +22,9 @@ ArchitecturesInstallIn64BitMode=x64compatible
 UninstallDisplayIcon={app}\{#MyAppExe}
 
 [Languages]
+#if FileExists(CompilerPath + "Languages\Ukrainian.isl")
 Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
+#endif
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
