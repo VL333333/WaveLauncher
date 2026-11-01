@@ -83,8 +83,5 @@ def profiles_from_settings(settings: dict) -> dict:
             "version": str(profile.get("version", config.DEFAULT_VERSION)),
             "game_dir": str(profile.get("game_dir", config.DEFAULT_GAME_DIR)),
             "ram_gb": max(1, min(32, ram)),
-            "client": "rust" if profile.get("client") == "rust" else "java",
-            "rust_exe": str(profile.get("rust_exe", "")),
-            "rust_args": str(profile.get("rust_args", "")),
         }
     return clean or {"За замовчуванням": {"version": config.DEFAULT_VERSION, "game_dir": config.DEFAULT_GAME_DIR, "ram_gb": 4}}

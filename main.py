@@ -63,14 +63,11 @@ class App:
         self.version_var = ctk.StringVar(value=profile.get("version", self.settings.get("version", config.DEFAULT_VERSION)))
         self.dir_var = ctk.StringVar(value=profile.get("game_dir", self.settings.get("game_dir", config.DEFAULT_GAME_DIR)))
         self.ram_var = ctk.IntVar(value=profile.get("ram_gb", self.settings.get("ram_gb", 4)))
-        self.client_var = ctk.StringVar(value=profile.get("client", "java"))
-        self.rust_exe_var = ctk.StringVar(value=profile.get("rust_exe", ""))
-        self.rust_args_var = ctk.StringVar(value=profile.get("rust_args", ""))
         self.snap_var = ctk.BooleanVar(value=bool(self.settings.get("show_snapshots", False)))
         self.mode_var = ctk.StringVar(value=self.settings.get("auth_mode", "microsoft"))
         self.name_var = ctk.StringVar(value=self.settings.get("offline_name", "Player"))
 
-        for _v in (self.version_var, self.client_var):
+        for _v in (self.version_var,):
             _v.trace_add("write", lambda *a: self._update_chips())
         root.title(config.APP_NAME)
         root.after(250, self._set_icon)
@@ -322,7 +319,7 @@ class App:
             if not labs or not labs["ver"].winfo_exists(): return
             labs["ver"].configure(text=f"●  {self.version_var.get() or '—'}")
             labs["ram"].configure(text=f"{int(self.ram_var.get())} GB RAM")
-            labs["client"].configure(text="Rust-клієнт" if self.client_var.get() == "rust" else "Java Edition")
+            labs["client"].configure(text="Java Edition")
         except Exception:
             pass
 
@@ -375,42 +372,7 @@ class App:
         row = ctk.CTkFrame(card, fg_color="transparent"); row.pack(fill="x", padx=20, pady=(0, 20))
         self._btn(row, "＋  Створити профіль", self._create_profile, secondary=False).pack(side="left", padx=(0, 8))
         self._btn(row, "Видалити профіль", self._delete_profile, fg_color="#4a1f3a", hover_color="#6a2a4e").pack(side="left")
-        self._rust_card()
-        ctk.CTkLabel(self.content, text="Профіль зберігає версію, папку гри та виділену RAM. Для ізоляції модів задайте окрему папку гри.", text_color=MUTED, font=F(12), wraplength=680, justify="left").grid(row=4, column=0, sticky="w", pady=16)
-
-    def _rust_card(self):
-        card = self._card(); card.grid(row=3, column=0, sticky="ew", pady=(14, 0))
-        self._caption(card, "Клієнт гри").pack(anchor="w", padx=20, pady=(18, 6))
-        seg = ctk.CTkSegmentedButton(card, values=["Java (офіційний)", "Rust (експериментальний)"], command=self._set_client,
-                                     height=36, selected_color="#2a3a7a", selected_hover_color="#3a4d9a",
-                                     unselected_color=PANEL_ALT, unselected_hover_color=BORDER, text_color=FG,
-                                     fg_color=PANEL_ALT, font=F(13, "bold"))
-        seg.pack(anchor="w", padx=20)
-        seg.set("Rust (експериментальний)" if self.client_var.get() == "rust" else "Java (офіційний)")
-        self._caption(card, "Шлях до Rust-клієнта (.exe)").pack(anchor="w", padx=20, pady=(16, 6))
-        row = ctk.CTkFrame(card, fg_color="transparent"); row.pack(fill="x", padx=20)
-        self._entry(row, textvariable=self.rust_exe_var, placeholder_text="напр. C:\\Games\\leafish.exe").pack(side="left", fill="x", expand=True, padx=(0, 8))
-        self._btn(row, "Обрати…", self._choose_rust_exe, width=100).pack(side="right")
-        self._caption(card, "Аргументи запуску (необов’язково, {name} = нік)").pack(anchor="w", padx=20, pady=(14, 6))
-        self._entry(card, textvariable=self.rust_args_var).pack(fill="x", padx=20)
-        links = ctk.CTkFrame(card, fg_color="transparent"); links.pack(fill="x", padx=20, pady=(14, 8))
-        self._btn(links, "Leafish (GitHub)", lambda: self._open_url("https://github.com/Lea-fish/Leafish/releases")).pack(side="left", padx=(0, 8))
-        self._btn(links, "Stevenarella (GitHub)", lambda: self._open_url("https://github.com/iceiix/stevenarella")).pack(side="left")
-        ctk.CTkLabel(card, text="Rust-клієнти — стороннє, експериментальне ПЗ: підтримують не всі версії й функції гри, "
-                     "мають власний екран входу, а моди Java на них не працюють. Лаунчер лише запускає програму.",
-                     text_color=MUTED, font=F(11), wraplength=640, justify="left").pack(anchor="w", padx=20, pady=(0, 18))
-
-    def _set_client(self, value):
-        self.client_var.set("rust" if value.startswith("Rust") else "java")
-        self._update_chips()
-        self._save_settings()
-
-    def _choose_rust_exe(self):
-        path = filedialog.askopenfilename(title="Оберіть Rust-клієнт", filetypes=[("Програма", "*.exe *"), ("Усі файли", "*.*")])
-        if path: self.rust_exe_var.set(os.path.normpath(path)); self._save_settings()
-
-    def _open_url(self, url):
-        import webbrowser; webbrowser.open(url)
+        ctk.CTkLabel(self.content, text="Профіль зберігає версію, папку гри та виділену RAM. Для ізоляції модів задайте окрему папку гри.", text_color=MUTED, font=F(12), wraplength=680, justify="left").grid(row=3, column=0, sticky="w", pady=16)
 
     def _mods_page(self):
         self._header("Менеджер модів", "Переглядай, вмикай і вимикай .jar-моди в папці активного профілю.")
@@ -457,14 +419,10 @@ class App:
         self._save_settings(); self._refresh_mods()
 
     def _profile_data(self):
-        return {"version": self.version_var.get(), "game_dir": self.dir_var.get(), "ram_gb": int(self.ram_var.get()),
-                "client": self.client_var.get(), "rust_exe": self.rust_exe_var.get().strip(),
-                "rust_args": self.rust_args_var.get().strip()}
+        return {"version": self.version_var.get(), "game_dir": self.dir_var.get(), "ram_gb": int(self.ram_var.get())}
 
     def _apply_profile(self, prof):
         self.version_var.set(prof["version"]); self.dir_var.set(prof["game_dir"]); self.ram_var.set(prof["ram_gb"])
-        self.client_var.set(prof.get("client", "java")); self.rust_exe_var.set(prof.get("rust_exe", ""))
-        self.rust_args_var.set(prof.get("rust_args", ""))
 
     def _capture_profile(self):
         if self.active_profile in self.profiles:
@@ -564,11 +522,6 @@ class App:
 
     def _on_play(self):
         if self.busy: return
-        if self.client_var.get() == "rust":
-            self._save_settings(); self.busy = True
-            self.play_btn.configure(state="disabled", text="ЗАПУСК RUST…")
-            threading.Thread(target=self._rust_worker, daemon=True).start()
-            return
         offline = self.mode_var.get() == "offline"
         if not offline and not config.client_id_is_set():
             messagebox.showerror("Потрібне налаштування", "У config.py не вказано CLIENT_ID. Інструкція є в README.md."); return
@@ -588,18 +541,6 @@ class App:
         def work():
             ids, online = game.get_versions(game_dir, show); self.post("versions", ids, online)
         threading.Thread(target=work, daemon=True).start()
-
-    def _rust_worker(self):
-        try:
-            self.post("status", "Запуск Rust-клієнта"); self.post("indeterminate")
-            proc = game.launch_external(self.rust_exe_var.get(), self.rust_args_var.get(), self.name_var.get().strip())
-            self.post("progress_reset"); self.post("status", "Rust-клієнт запущено")
-            self.post("detail", "Увійди в акаунт у вікні клієнта. Лог: " + config.LOG_FILE)
-            code = proc.wait()
-            if code != 0: self.post("error", f"Rust-клієнт завершився з помилкою (код {code}).\nЛог: {config.LOG_FILE}")
-        except Exception as exc:
-            traceback.print_exc(); self.post("error", friendly_error(exc))
-        finally: self.post("idle")
 
     def _play_worker(self, version, game_dir, offline, nick, ram_gb):
         try:
@@ -673,7 +614,8 @@ class App:
     def _on_versions(self, ids, online):
         if not hasattr(self, "version_box") or not self.version_box.winfo_exists(): return
         self.version_box.configure(values=ids or [self.version_var.get() or config.DEFAULT_VERSION], state="readonly")
-        if ids and self.version_var.get() not in ids: self.version_var.set(ids[0])
+        if ids and self.version_var.get() not in ids:
+            self.version_var.set(config.DEFAULT_VERSION if config.DEFAULT_VERSION in ids else ids[0])
         if not online: self._on_detail("Офлайн: показано встановлені версії, якщо вони доступні.")
     def _on_error(self, text):
         if hasattr(self, "status_label") and self.status_label.winfo_exists(): self.status_label.configure(text="Помилка", text_color=RED)
