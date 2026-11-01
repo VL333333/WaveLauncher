@@ -2,6 +2,7 @@
 import hashlib
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import uuid
@@ -92,4 +93,23 @@ def launch(version: str, game_dir: str, account: dict, ram_gb: int = 4) -> subpr
     with open(config.LOG_FILE, "wb") as log:  # саму команду (з токеном) у лог НЕ пишемо
         return subprocess.Popen(
             command, cwd=game_dir, stdout=log, stderr=subprocess.STDOUT, creationflags=flags
+        )
+
+
+def launch_external(exe: str, args: str, account_name: str = "") -> subprocess.Popen:
+    """Запускає сторонній клієнт (напр. написаний на Rust: Leafish, Stevenarella).
+    Такий клієнт має власний екран входу, тому токени Microsoft йому НЕ передаються.
+    У рядку аргументів можна вживати {name} - нік з налаштувань лаунчера."""
+    exe = (exe or "").strip().strip('"')
+    if not exe or not os.path.isfile(exe):
+        raise InputError("Не знайдено файл Rust-клієнта. Вкажи шлях до .exe у вкладці «Профілі».")
+    try:
+        extra = shlex.split((args or "").replace("{name}", account_name or "Player"), posix=(os.name != "nt"))
+    except ValueError as exc:
+        raise InputError(f"Некоректні аргументи запуску: {exc}")
+    os.makedirs(config.DATA_DIR, exist_ok=True)
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    with open(config.LOG_FILE, "wb") as log:
+        return subprocess.Popen(
+            [exe, *extra], cwd=os.path.dirname(exe), stdout=log, stderr=subprocess.STDOUT, creationflags=flags
         )
