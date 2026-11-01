@@ -4,15 +4,15 @@
 1. Створи акаунт на github.com і новий репозиторій (Public).
 2. Завантаж туди ВМІСТ цієї папки (разом з прихованою папкою .github).
 3. Вкладка Actions -> "Build Windows installer" -> Run workflow.
-4. Через ~5 хв внизу сторінки запуску в Artifacts буде MyCraftLauncher.zip з
-   MyCraftLauncher_Setup.exe (інсталятор) і MyCraftLauncher_Portable.zip.
+4. Через ~5 хв внизу сторінки запуску в Artifacts буде WAVELauncher.zip з
+   WAVE_Launcher_Setup.exe (інсталятор) і WAVE_Launcher_Portable.zip.
 5. Для публічного посилання: створи тег v2.0 (Releases -> Draft new release -> tag v2.0).
    Файли автоматично з'являться в Releases — це і є посилання для скачування.
 
 ВАРІАНТ Б (на своєму Windows-ПК):
 1. Встанови Python 3.12 (з Add to PATH) і Inno Setup 6.
 2. Двічі клікни Зібрати_EXE.bat.
-3. Готовий інсталятор: installer_output\MyCraftLauncher_Setup.exe
+3. Готовий інсталятор: installer_output\WAVE_Launcher_Setup.exe
 
 ПЕРЕД ЦИМ ОБОВ'ЯЗКОВО:
 - Впиши свій Azure CLIENT_ID у config.py (без нього вхід через Microsoft не працюватиме у інших людей).

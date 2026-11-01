@@ -8,7 +8,7 @@ MYCRAFT LAUNCHER 2.0 — WINDOWS
 
 ЯК ЗРОБИТИ EXE:
 1. Двічі натисни «Зібрати_EXE.bat» на Windows.
-2. Після успішного завершення програма буде у dist\MyCraftLauncher\MyCraftLauncher.exe.
+2. Після успішного завершення програма буде у dist\WAVELauncher\WAVELauncher.exe.
 
 MICROSOFT:
 Для входу через Microsoft потрібно налаштувати CLIENT_ID в config.py або змінну середовища MYCRAFT_CLIENT_ID.
